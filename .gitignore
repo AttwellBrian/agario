@@ -1,0 +1,14 @@
+###Mac###
+
+.DS_Store
+
+###Ubuntu###
+
+.directory
+
+###IntelliJ###
+
+*.iml
+*.ipr
+*.iws
+.idea/
