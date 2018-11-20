@@ -22,6 +22,9 @@ sourceSets {
     test.resources.srcDirs = ['testresources']
 }
 
+// TODO: we can use https://ktor.io/quickstart/quickstart/docker.html
+// for building the docker container.
+
 repositories {
     mavenLocal()
     jcenter()

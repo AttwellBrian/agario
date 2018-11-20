@@ -13,24 +13,34 @@ provider "aws" {
 }
 
 resource "aws_instance" "example" {
-  # AMI built using packer from ami.js
-  ami           = "ami-046021fae9aba2140"
+  # AMI built by running `packer terraform/ami.js`
+  ami           = "ami-08e46d157b9c6bfb2"
   instance_type = "t2.micro"
 
+  # Needed for the sake of ssh
+  key_name = "DeveloperKeyPair"
+
   # Use the security group below to expose port 8080.
-  vpc_security_group_ids = ["${aws_security_group.instance.id}"]
+  vpc_security_group_ids = ["${aws_security_group.instance.id}", "${aws_security_group.ssh.id}"]
 
   # Use busybox to return a very simple http response
+  # TODO: pull down the docker container.
+  # Then login and start it.
   user_data = <<-EOF
               #!/bin/bash
-              echo "Hello, World" > index.html
-              nohup busybox httpd -f -p "${var.server_port}" &
+              DOCKER_LOGIN="sudo "`aws ecr get-login`
+			  $(echo $DOCKER_LOGIN)
+			  sudo docker pull 697071018446.dkr.ecr.us-east-1.amazonaws.com/hello-world
+			  sudo docker run -p 80:80 697071018446.dkr.ecr.us-east-1.amazonaws.com/hello-world
               EOF
 
   tags {
     Name = "terraform-example"
   }
 }
+
+# SEE https://docs.aws.amazon.com/AmazonECR/latest/userguide/Registries.html
+# https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html#docker-basics-create-image
 
 # By default AWS does not allow any incoming or outgoing traffic from
 # and EC2 instance. To allow EC2 traffic on port 8080, we need a security
@@ -45,6 +55,27 @@ resource "aws_security_group" "instance" {
     from_port   = "${var.server_port}"
     to_port     = "${var.server_port}"
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Expose SSH so that we can mess around with this instance
+# in production and try things out.
+resource "aws_security_group" "ssh" {
+  name        = "ssh"
+  description = "(Proxy) Allow SSH"
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
