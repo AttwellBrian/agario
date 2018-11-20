@@ -1,6 +1,18 @@
 <!-- <#-- @ftlvariable name="data" type="com.example.IndexData" -->
 <!-- This is actually an ftl file -->
 <html>
+<head>
+<style>
+  .fullscreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 10;
+  }
+</style>
+</head>
 <body>
 
 Game
@@ -15,16 +27,60 @@ Game
 </ul>
 -->
 
-<canvas id="game-canvas" width="600" height="600"></canvas>
-
+<canvas id="game-canvas" class="fullscreen"></canvas>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
+
+function drawCircle(ctx, x, y, radius) {
+	ctx.beginPath();
+	ctx.arc(
+		x,//x
+		y,//y
+		radius,//r
+		0,//start angle
+		2*Math.PI//end angle
+		);
+	//ctx.closePath(); // redundant?
+	ctx.stroke();
+}
+
+function drawViews(userViewModel) {
+	const canvas = document.getElementById("game-canvas");
+	const ctx = canvas.getContext("2d");
+
+	// Adjust the drawing width to match the div width.
+	// Otherwise we get weird scaling artifacts.
+	ctx.canvas.width  = window.innerWidth;
+  	ctx.canvas.height = window.innerHeight;
+
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	const centerX = canvas.width / 2;
+	const centerY = canvas.height / 2;
+
+	// Draw opponents' offset locations
+	const opponentViews = userViewModel['opponents']
+	opponentViews.forEach(function(opponentView) {
+		console.log(opponentView)
+  		drawCircle(ctx, 
+  			opponentView.xposition + centerX, 
+  			opponentView.yposition + centerY, 
+  			opponentView.size);
+	});
+
+	// Draw our current position
+	drawCircle(ctx, centerX, centerY, userViewModel.size);
+}
+
+/////////           /////////
+///////// TRANSPORT /////////
+/////////           /////////
 
 // Global variable to hold the websocket.
 var socket = null;
 
 function receiveFrame(data) {
-
+	console.log(data)
+	drawViews(data)
 }
 
 /**
@@ -62,7 +118,7 @@ function connect() {
         }
 
         // Notify the user using the messages container.
-        write("Disconnected with close code " + evt.code + " and " + explanation);
+        console.log("Disconnected with close code " + evt.code + " and " + explanation);
         // Try to reconnect after 5 seconds.
         setTimeout(connect, 5000);
     };
@@ -77,9 +133,6 @@ function connect() {
 // https://github.com/ktorio/ktor-samples/blob/master/app/chat/resources/web/main.js 
 connect();
 
-
-
 </script>
-
 </body>
 </html>
