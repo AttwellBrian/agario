@@ -1,5 +1,7 @@
 package com.brianattwell.asteroids
 
+import com.google.gson.GsonBuilder
+import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.request.*
@@ -13,6 +15,8 @@ import io.ktor.http.cio.websocket.*
 import java.time.*
 import io.ktor.gson.*
 import io.ktor.features.*
+import io.ktor.freemarker.FreeMarker
+import io.ktor.freemarker.FreeMarkerContent
 import io.ktor.http.cio.websocket.Frame
 import java.io.*
 import java.util.*
@@ -22,6 +26,8 @@ import io.ktor.network.util.*
 import kotlin.coroutines.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.io.*
+
+data class IndexData(val items: List<Int>)
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -40,40 +46,23 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
+    install(FreeMarker) {
+        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
+    }
+
+    val gson = GsonBuilder().create()
+
     routing {
         get("/") {
-            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+            call.respond(FreeMarkerContent("index.html", mapOf("data" to IndexData(listOf(1, 2, 3))), ""))
         }
 
-        get("/html-dsl") {
-            call.respondHtml {
-                body {
-                    h1 { +"HTML" }
-                    ul {
-                        for (n in 1..10) {
-                            li { +"$n" }
-                        }
-                    }
-                }
-            }
-        }
 
-        get("/styles.css") {
-            call.respondCss {
-                body {
-                    backgroundColor = Color.red
-                }
-                p {
-                    fontSize = 2.em
-                }
-                rule("p.myclass") {
-                    color = Color.blue
-                }
-            }
-        }
-
-        webSocket("/myws/echo") {
-            send(Frame.Text("Hi from server"))
+        // Also see https://ktor.io/quickstart/guides/chat.html for patterns.
+        // See https://github.com/ktorio/ktor-samples/blob/master/app/chat/resources/web/main.js
+        webSocket("/ws") {
+            val gson = gson.toJson(UserState(0.3, 0.2))
+            send(Frame.Text(gson))
             while (true) {
                 val frame = incoming.receive()
                 if (frame is Frame.Text) {
@@ -82,7 +71,11 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        get("/json/gson") {
+        // Ideally this would be over UDP
+        // Websocket might make sense.
+        // But for now I don't think it makes much sense
+        // https://gafferongames.com/post/why_cant_i_send_udp_packets_from_a_browser/
+        get("/user-state") {
             call.respond(mapOf("hello" to "world"))
         }
     }
