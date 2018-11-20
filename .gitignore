@@ -12,3 +12,12 @@
 *.ipr
 *.iws
 .idea/
+
+###Terraform###
+
+# scratch file
+.terraform
+
+# state files
+*.tfstate
+*.tfstate.backup
