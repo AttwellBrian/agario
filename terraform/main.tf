@@ -13,8 +13,8 @@ provider "aws" {
 }
 
 resource "aws_instance" "example" {
-  # Standard AMI with Ubuntu installed
-  ami           = "ami-40d28157"
+  # AMI built using packer from ami.js
+  ami           = "ami-046021fae9aba2140"
   instance_type = "t2.micro"
 
   # Use the security group below to expose port 8080.
