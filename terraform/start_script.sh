@@ -7,6 +7,7 @@
 # Run on startup
 DOCKER_LOGIN="sudo "`aws ecr get-login`
 $(echo $DOCKER_LOGIN)
+sudo docker run -p 80:80 697071018446.dkr.ecr.us-east-1.amazonaws.com/hello-world
 
 #docker pull 697071018446.dkr.ecr.us-east-1.amazonaws.com/hello-world
 sudo docker run -p 80:80 697071018446.dkr.ecr.us-east-1.amazonaws.com/hello-world
