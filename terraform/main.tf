@@ -30,8 +30,8 @@ resource "aws_instance" "example" {
               #!/bin/bash
               DOCKER_LOGIN="sudo "`aws ecr get-login`
               $(echo $DOCKER_LOGIN)
-              sudo docker pull 697071018446.dkr.ecr.us-east-1.amazonaws.com/hello-world-2:latest
-              sudo docker run -p 80:80 697071018446.dkr.ecr.us-east-1.amazonaws.com/hello-world-2:latest
+              sudo docker pull 697071018446.dkr.ecr.us-east-1.amazonaws.com/ktor-deployed-attwell-1
+              sudo docker run -p 8080:8080 --rm 697071018446.dkr.ecr.us-east-1.amazonaws.com/ktor-deployed-attwell-1
               EOF
 
   tags {
