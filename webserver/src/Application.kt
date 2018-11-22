@@ -82,12 +82,16 @@ fun Application.module(testing: Boolean = false) {
             while (true) {
                 try {
                     val frame = incoming.receive()
+                    println("Recieved")
 
                     if (frame is Frame.Text) {
                         // TODO: pase an AccountData
                         // NOTE: This is necessary for some reason...
+
                         var textFromClient = frame.readText()
+                        val userInput = gson.fromJson<UserInput>(textFromClient, UserInput::class.java)
                         println("Text from client $textFromClient")
+                        webServer.sendInput(gameIdentifier, userInput)
                     }
                 } catch (e: ClosedReceiveChannelException) {
                     webServer.removePlayer(gameIdentifier)

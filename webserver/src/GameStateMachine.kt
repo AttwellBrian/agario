@@ -7,6 +7,7 @@ data class UserState(var xposition: Double, var yposition: Double, var rotation:
 
 data class OpponentView(var xposition: Double, var yposition: Double, var size: Double)
 data class UserView(var opponents: List<OpponentView>, val size: Double, var id: String)
+data class UserInput(val mouseX: Double, val mouseY: Double)
 //data class UserInput(var xposition: Double, var yposition: Double)
 
 
@@ -53,6 +54,13 @@ class GameStateMachine(var lastTimeStep: Long) {
 
     fun remove(member: String) {
         users.removeIf { it.user.equals(member) }
+    }
+
+    fun moveUser(gameIdentifier: String, userInput: UserInput) {
+        // TODO: hack toghether something racy..
+        users.filter { it.user.equals(gameIdentifier) }.first()?.let {
+
+        }
     }
 
     // TODO: create a static restore method...

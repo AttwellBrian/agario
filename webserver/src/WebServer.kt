@@ -28,5 +28,11 @@ class WebServer(val gameStateMachine: GameStateMachine) {
 
     }
 
+    fun sendInput(gameIdentifier: String, userInput: UserInput?) {
+        userInput?.let {
+            gameStateMachine.moveUser(gameIdentifier, userInput)
+        }
+    }
+
 
 }

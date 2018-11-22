@@ -17,19 +17,35 @@
 
 Game
 
-
-
-<!--
-<ul>
-    <#list data.items as item>
-    <li>${item}</li>
-</#list>
-</ul>
--->
-
 <canvas id="game-canvas" class="fullscreen"></canvas>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
+
+///
+/// Mouse handling
+///
+
+var _lastmousex = null;
+var _lastmousey = null;
+function onMouseUpdate(e) {
+  _lastmousex = e.pageX;
+  _lastmousey = e.pageY;
+}
+
+function getLastMouseX() {
+  return _lastmousex;
+}
+
+function getLastMouseY() {
+  return _lastmousey;
+}
+
+document.addEventListener('mousemove', onMouseUpdate, false);
+document.addEventListener('mouseenter', onMouseUpdate, false);
+
+///
+/// Rendering
+///
 
 function drawCircle(ctx, x, y, radius) {
 	ctx.beginPath();
@@ -51,7 +67,7 @@ function drawViews(userViewModel) {
 	// Adjust the drawing width to match the div width.
 	// Otherwise we get weird scaling artifacts.
 	ctx.canvas.width  = window.innerWidth;
-  	ctx.canvas.height = window.innerHeight;
+    ctx.canvas.height = window.innerHeight;
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	const centerX = canvas.width / 2;
@@ -69,6 +85,11 @@ function drawViews(userViewModel) {
 
 	// Draw our current position
 	drawCircle(ctx, centerX, centerY, userViewModel.size);
+
+
+  // REMOVE THIS LATER ON!!!
+  drawCircle(ctx, getLastMouseX(), getLastMouseY(), 10);
+
 }
 
 /////////           /////////
@@ -132,6 +153,20 @@ function connect() {
 
 // https://github.com/ktorio/ktor-samples/blob/master/app/chat/resources/web/main.js 
 connect();
+
+// Send
+window.setInterval(function(){
+  var msg = {
+    mouseX: getLastMouseX(),
+    mouseY: getLastMouseY()
+  };
+
+  // Send the msg object as a JSON-formatted string.
+  const OPEN_STATE = 1;
+  if (socket !== null && socket.readyState == OPEN_STATE) {
+    socket.send(JSON.stringify(msg));
+  }
+}, 1000/30);
 
 </script>
 </body>
