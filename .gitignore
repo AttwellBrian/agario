@@ -21,3 +21,6 @@
 # state files
 *.tfstate
 *.tfstate.backup
+
+###AWS##
+DeveloperKeyPair.pem
