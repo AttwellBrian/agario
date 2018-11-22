@@ -1,4 +1,4 @@
-This repo is in a rough state. The game mechanics aren't fleshed out. And the file structure is a mess. However, the websocket handling is mostly in place as well as code that deploys to AWS.
+This repo is in a rough state. The game mechanics aren't fleshed out. And the file structure is a mess. However, the communication via websocket is in place, the build scripts are rouhgly in place as well as the AWS deployment scripts.
 
 # Deployment
 
