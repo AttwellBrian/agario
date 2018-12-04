@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # From https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html#docker-basics-create-image
 
 # should also include a build step here.

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #sudo apt install yum -y
 
 #sudo apt install awscli -y

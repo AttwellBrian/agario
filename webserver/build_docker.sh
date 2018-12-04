@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # https://github.com/ktorio/ktor-samples/tree/master/deployment/docker
 
 ./gradlew :build
