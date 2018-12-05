@@ -19,6 +19,8 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "agario-cluster.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        app: products # hack
+        department: sales # hack
     spec:
       containers:
         - name: {{ .Chart.Name }}
