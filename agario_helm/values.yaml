@@ -4,9 +4,15 @@
 
 replicaCount: 1
 
+# Should be able to validate that this runs via
+# validate that docker run works: docker run -i -t -p 8080:8080 gcr.io/testproject-224403/ktor-attwell-gcp:v1
+# kubectl run ktor-attwell-gcp --image=gcr.io/testproject-224403/ktor-attwell-gcp:v1 --port 8080
+# Minikube problems: https://ryaneschinger.com/blog/using-google-container-registry-gcr-with-minikube/
 image:
-  repository: nginx
-  tag: stable
+  # Where you can store one or more versions of a docker image.
+  repository: gcr.io/testproject-224403/ktor-attwell-gcp
+  # Specific version of docker image.
+  tag: latest
   pullPolicy: IfNotPresent
 
 nameOverride: ""
