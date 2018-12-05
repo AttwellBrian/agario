@@ -13,3 +13,8 @@ This will upload the ami to S3. It will cost 1 cent per month in perpetuity. You
 Push the docker container with `push_docker.sh`. Then re-deploy infastructure with `terraform apply -auto-approve`.
 
 
+# Alt Deployemnt
+
+Kubernetes engine on GCP. First create your kubernetes cluster and authenticate. Then invoke `push_kubernetes.sh`. Combining these two steps is WIP.
+
+
